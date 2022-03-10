@@ -3,15 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
-import Course from "./Course";
+import CourseCard from "./CourseCard";
 import {
   doc,
   collection,
-  getDocs,
-  addDoc,
   setDoc,
-  query,
-  where,
   getDoc,
   onSnapshot,
 } from "firebase/firestore";
@@ -36,13 +32,15 @@ import {
   Input,
   Flex,
   Box,
-  Spacer,
+  SimpleGrid,
   Heading,
   HStack,
 } from "@chakra-ui/react";
+import { Link, BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { AddIcon } from "@chakra-ui/icons";
 import SidebarWithHeader from "./SidebarWithHeader";
+import Course from "./Course";
 
 const Courses = () => {
   const [coursesData, setcoursesData] = useState([]);
@@ -65,6 +63,7 @@ const Courses = () => {
   const { currentUser } = useAuth();
   const [createdCourses, setCreatedCourses] = useState([]);
   const [joinedCourses, setjoinedCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   if (currentUser.email) {
@@ -82,18 +81,24 @@ const Courses = () => {
     setError(false);
     onJoinClose();
   }
+  function onfocus() {
+    setError(false);
+    setLoading(false);
+  }
   async function createCourse(e) {
     e.preventDefault();
     const id = uuidv4();
-
+    setLoading(true);
     await setDoc(
       doc(db, "createdCourses", `${currentUser.email}`, "courses", `${id}`),
       { title: courseTitle, creator: currentUser.email, id: id }
     );
+    setLoading(false);
     onCreateClose();
   }
   async function joinCourse(e) {
     e.preventDefault();
+    setLoading(true);
     const docSnap = await getDoc(
       doc(db, "createdCourses", `${email}`, "courses", `${coursesCode}`)
     );
@@ -118,7 +123,9 @@ const Courses = () => {
         ),
         coursesData
       );
+      setLoading(false);
       onJoinClose();
+
       console.log("Document data:", docSnap.data());
     }
   }
@@ -156,10 +163,6 @@ const Courses = () => {
     <div>
       <SidebarWithHeader>
         <Flex>
-          <Box p="2">
-            <Heading size="md">Courses</Heading>
-          </Box>
-          {/* <Spacer /> */}
           <Box mr="8">
             <Menu>
               <MenuButton as={IconButton} icon={<AddIcon />}></MenuButton>
@@ -174,14 +177,27 @@ const Courses = () => {
             </Menu>
           </Box>
         </Flex>
-        <HStack m={8} spacing={6}>
-          {createdCourses.map((item) => (
-            <Course key={item.id} data={item} />
+        <HStack spacing={6}>
+          {createdCourses.map((item, index) => (
+            <>
+              <Link to={item.id}>
+                <CourseCard key={index} data={item} />
+              </Link>
+              <Routes>
+                <Route path={`${item.id}`} element={<Course data={item} />} />
+              </Routes>
+            </>
           ))}
-          {joinedCourses.map((item) => (
-            <Course key={item.id} data={item} />
-          ))}
+          {/* {joinedCourses.map((item, index) => (
+            <>
+              <Link to={"" + index + item.id}>
+                <CourseCard key={index} data={item}></CourseCard>
+              </Link>
+            </>
+          ))} */}
         </HStack>
+
+        {/* Modal for Create Course */}
 
         <Modal isOpen={isCreateOpen} onClose={onCreateClose}>
           <ModalOverlay />
@@ -196,12 +212,18 @@ const Courses = () => {
                     id="course-title"
                     placeholder="Enter Course Title"
                     onChange={(e) => setCourseTitle(e.target.value)}
+                    onFocus={onfocus}
                   />
                 </FormControl>
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} type="submit">
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  type="submit"
+                  disabled={loading}
+                >
                   Create
                 </Button>
                 <Button onClick={onCreateClose}>Cancel</Button>
@@ -209,7 +231,8 @@ const Courses = () => {
             </form>
           </ModalContent>
         </Modal>
-        {/* //!join modal */}
+
+        {/*Modal for join course*/}
         <Modal isOpen={isJoinOpen} onClose={jClose}>
           <ModalOverlay />
           <ModalContent>
@@ -230,6 +253,7 @@ const Courses = () => {
                   <Input
                     placeholder="Enter Creators Email"
                     onChange={(e) => setemail(e.target.value)}
+                    onFocus={onfocus}
                   />
                   {error && (
                     <FormErrorMessage>Invalid Credentials.</FormErrorMessage>
@@ -238,7 +262,12 @@ const Courses = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="blue" type="submit" mr={3}>
+                <Button
+                  colorScheme="blue"
+                  type="submit"
+                  mr={3}
+                  disabled={loading}
+                >
                   Join
                 </Button>
                 <Button onClick={jClose}>Cancel</Button>

@@ -48,6 +48,7 @@ import {
   FiEdit2,
   FiCheck,
 } from "react-icons/fi";
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
@@ -169,6 +170,7 @@ const MobileNav = () => {
   const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const [counter, setCounter] = useState(0);
 
   async function handleLogout() {
     setError("");
@@ -182,10 +184,7 @@ const MobileNav = () => {
   }
 
   function EditableControls() {
-    const {
-      isEditing,
-      getEditButtonProps,
-    } = useEditableControls();
+    const { isEditing, getEditButtonProps } = useEditableControls();
 
     return (
       !isEditing && (
@@ -264,7 +263,6 @@ const MobileNav = () => {
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
               <MenuItem onClick={onProfileOpen}>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
               <MenuDivider />
               <MenuItem onClick={handleLogout}>Sign out</MenuItem>
             </MenuList>
@@ -277,15 +275,29 @@ const MobileNav = () => {
           <ModalHeader>Profile</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Center>
+            {/* <Center>
               <Editable>
                 <Avatar
                   size={"2xl"}
                   name={user.displayName && user.displayName}
                   src={user.photoURL && user.photoURL}
                 ></Avatar>
-                {/* <EditableControls/> */}
               </Editable>
+            </Center> */}
+            <Center>
+              <HStack spacing={12}>
+                <button>
+                  <ArrowLeftIcon onClick={(e) => setCounter(counter + 1)} />
+                </button>
+                <Avatar
+                  size={"2xl"}
+                  name={user.displayName && user.displayName}
+                  src={user.photoURL && user.photoURL}
+                />
+                <button>
+                  <ArrowRightIcon onClick={(e) => setCounter(counter - 1)} />
+                </button>
+              </HStack>
             </Center>
             <FormControl mt={4}>
               <FormLabel>Name</FormLabel>

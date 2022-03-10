@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
+  updateProfile,
 } from "firebase/auth";
 import app from "../firebase";
 
@@ -22,7 +23,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
- 
+  const [isNewUser, setisNewUser] = useState(true);
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -46,6 +47,9 @@ export const AuthProvider = ({ children }) => {
   function updateuserPassword(password) {
     return updatePassword(currentUser, password);
   }
+  function updateuserProfile(url) {
+    updateProfile(currentUser, { photoURL: { url } });
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -64,6 +68,8 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     updateuserEmail,
     updateuserPassword,
+    updateuserProfile,
+    isNewUser,setisNewUser,
   };
 
   return (

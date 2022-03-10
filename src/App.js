@@ -12,10 +12,10 @@ import { useAuth } from "./contexts/AuthContext";
 import PrivateRoute from "./Components/PrivateRoute";
 import LoggedRoute from "./Components/LoggedRoute";
 import ForgotPassword from "./Components/ForgotPassword";
-
-
+import Course from "./Components/Course";
 import { ChakraProvider } from "@chakra-ui/react";
 import SetupProfile from "./Components/SetupProfile";
+import IsNewUser from "./Components/IsNewUser";
 // import UpdateAccount from "./Components/UpdateAccount";
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
 }
 
 const ContentBox = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, isNewUser } = useAuth();
   return (
     <main className="fixed h-screen w-screen overflow-hidden">
       <Router>
@@ -44,12 +44,15 @@ const ContentBox = () => {
           </Route>
           {/* <Route path="/update-account" element={<UpdateAccount />} /> */}
           <Route element={<PrivateRoute currentUser={currentUser} />}>
-            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/*" element={<Courses />} />
+            {/* <Route path="/courses/:id" element={<Course />} /> */}
             <Route path="/meeting" element={<Meeting />} />
             <Route path="/account" element={<Account />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/setup" element={<SetupProfile />} />
+            <Route element={<IsNewUser user={isNewUser} />}>
+              <Route path="/setup" element={<SetupProfile />} />
+            </Route>
           </Route>
         </Routes>
       </Router>

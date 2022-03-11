@@ -180,12 +180,11 @@ const Courses = () => {
         <HStack spacing={6}>
           {createdCourses.map((item, index) => (
             <>
-              <Link to={item.id}>
-                <CourseCard key={index} data={item} />
-              </Link>
               <Routes>
                 <Route path={`${item.id}`} element={<Course data={item} />} />
               </Routes>
+
+              <CourseCard key={index} data={item} />
             </>
           ))}
           {/* {joinedCourses.map((item, index) => (

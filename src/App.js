@@ -8,6 +8,7 @@ import Login from "./Components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./Components/Register";
 import { AuthProvider } from "./contexts/AuthContext";
+import LocalContext from "./contexts/LocalContext";
 import { useAuth } from "./contexts/AuthContext";
 import PrivateRoute from "./Components/PrivateRoute";
 import LoggedRoute from "./Components/LoggedRoute";
@@ -23,7 +24,9 @@ function App() {
     <>
       <ChakraProvider>
         <AuthProvider>
-          <ContentBox />
+          <LocalContext>
+            <ContentBox />
+          </LocalContext>
         </AuthProvider>
       </ChakraProvider>
     </>
@@ -36,6 +39,7 @@ const ContentBox = () => {
     <main className="fixed h-screen w-screen overflow-hidden">
       <Router>
         {/* {currentUser && <Sidebar />} */}
+        {/* {console.log(isNewUser)} */}
         <Routes>
           <Route element={<LoggedRoute currentUser={currentUser} />}>
             <Route path="/login" element={<Login />} />
@@ -50,9 +54,10 @@ const ContentBox = () => {
             <Route path="/account" element={<Account />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route element={<IsNewUser user={isNewUser} />}>
+            <Route element={<IsNewUser isNewUser={isNewUser} />}>
               <Route path="/setup" element={<SetupProfile />} />
             </Route>
+            {/* <Route path="/setup" element={<SetupProfile />} /> */}
           </Route>
         </Routes>
       </Router>

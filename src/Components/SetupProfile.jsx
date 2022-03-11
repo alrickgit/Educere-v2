@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Flex,
   Box,
@@ -16,17 +16,24 @@ import {
   Center,
   IconButton,
 } from "@chakra-ui/react";
-import { profileIconsRef } from "../firebase";
+import { db, profileIconsRef } from "../firebase";
 import { listAll, getDownloadURL } from "@firebase/storage";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+import IsNewUser from "./IsNewUser";
 
 const SetupProfile = () => {
   const [iconURL, seticonURL] = useState([]);
   const [counter, setCounter] = useState(0);
-  const { currentUser, updateuserProfile,setisNewUser } = useAuth();
+  const { currentUser, updateuserProfile, setisNewUser, IsNewUser } = useAuth();
   const [photoURL, setPhotoURL] = useState();
+  const [userName, setUserName] = useState("");
+  const [org, setOrg] = useState("");
+  const [bio, setBio] = useState("");
+  const gender = useRef();
+
   const navigate = useNavigate();
 
   //console.log(iconURL);
@@ -50,15 +57,25 @@ const SetupProfile = () => {
       });
   };
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (currentUser) {
-      setPhotoURL(iconURL.at(counter));
-      console.log(photoURL);
-      // updateuserProfile(photoURL)
+      console.log(iconURL.at(counter));
     }
-    setisNewUser(false)
-    navigate("/");
+    console.log("working");
 
+    setisNewUser(false);
+    console.log("before" + IsNewUser);
+
+    const docRef = await setDoc(doc(db, "UserData", `${currentUser.email}`), {
+      userName: userName,
+      org: org,
+      bio: bio,
+      email: currentUser.email,
+      gender: gender.current.value,
+    });
+    console.log("after" + IsNewUser);
+
+    navigate("/");
   }
 
   useEffect(() => {
@@ -85,7 +102,6 @@ const SetupProfile = () => {
         </Stack>
 
         <></>
-
         <Box
           rounded={"lg"}
           bg={useColorModeValue("white", "gray.700")}
@@ -109,13 +125,16 @@ const SetupProfile = () => {
               <Box>
                 <FormControl id="Name" isRequired>
                   <FormLabel>Name</FormLabel>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) => setUserName(e.target.value)}
+                  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl id="Gender">
                   <FormLabel>Gender</FormLabel>
-                  <Select placeholder="--">
+                  <Select placeholder="--" ref={gender}>
                     <option value="M">Male</option>
                     <option value="F">Female</option>
                     <option value="NB">Non Binary</option>
@@ -127,12 +146,17 @@ const SetupProfile = () => {
             <Box>
               <FormControl id="Organization">
                 <FormLabel>Organization</FormLabel>
-                <Input type="text" />
+                <Input type="text" onChange={(e) => setOrg(e.target.value)} />
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl id="Bio">
+                <FormLabel>Bio</FormLabel>
+                <Input type="text" onChange={(e) => setBio(e.target.value)} />
               </FormControl>
             </Box>
             <Stack spacing={10} pt={2}>
               <Button
-                loadingText="Submitting"
                 size="lg"
                 bg={"blue.400"}
                 color={"white"}

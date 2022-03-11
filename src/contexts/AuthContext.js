@@ -69,7 +69,8 @@ export const AuthProvider = ({ children }) => {
     updateuserEmail,
     updateuserPassword,
     updateuserProfile,
-    isNewUser,setisNewUser,
+    isNewUser,
+    setisNewUser,
   };
 
   return (

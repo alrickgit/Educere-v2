@@ -40,8 +40,12 @@ const Register = () => {
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
       if (isNewUser) {
+        console.log("in setup"+isNewUser)
         navigate("/setup");
+        
       } else {
+        setisNewUser(false)
+        console.log('in register'+ isNewUser)
         navigate("/");
       }
     } catch {

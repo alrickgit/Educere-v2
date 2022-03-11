@@ -52,6 +52,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
+import { useLocalContext } from "../contexts/LocalContext";
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -88,7 +89,6 @@ const SidebarContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box
-      transition="2s ease"
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -167,6 +167,7 @@ const MobileNav = () => {
   } = useDisclosure();
   const auth = getAuth();
   const user = auth.currentUser;
+  const {uName,bio}= useLocalContext();
   const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
@@ -240,7 +241,7 @@ const MobileNav = () => {
               <HStack>
                 <Avatar
                   size={"sm"}
-                  name={user.displayName && user.displayName}
+                  name={uName && uName}
                   src={user.photoURL && user.photoURL}
                 />
                 <VStack
@@ -250,7 +251,7 @@ const MobileNav = () => {
                   ml="2"
                 >
                   <Text fontSize="sm">
-                    {user.displayName ? user.displayName : "User"}
+                    {uName ? uName : "User"}
                   </Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
@@ -269,6 +270,8 @@ const MobileNav = () => {
           </Menu>
         </Flex>
       </HStack>
+
+      {/* profile Modal */}
       <Modal isOpen={isProfileOpen} onClose={onProfileClose} size="lg">
         <ModalOverlay />
         <ModalContent>
@@ -303,7 +306,7 @@ const MobileNav = () => {
               <FormLabel>Name</FormLabel>
               <Editable
                 ref={nameRef}
-                defaultValue={user.displayName}
+                defaultValue={user.displayName ? user.displayName : uName}
                 isPreviewFocusable={false}
                 ml={2}
                 color="gray.600"
@@ -318,7 +321,7 @@ const MobileNav = () => {
             <FormControl mt={4}>
               <FormLabel>Biography</FormLabel>
               <Editable
-                defaultValue="Biography"
+                defaultValue={bio?bio:""}
                 isPreviewFocusable={false}
                 placeholder="Biography"
                 ml={2}

@@ -15,8 +15,9 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
-  AlertDescription,
+  AlertDescription,FormHelperText,FormErrorMessage
 } from "@chakra-ui/react";
+import validator from "validator";
 
 const Register = () => {
   const emailRef = useRef();
@@ -24,15 +25,28 @@ const Register = () => {
   const passwordConfirmRef = useRef();
   const { signup, isNewUser,setisNewUser } = useAuth();
   const [error, setError] = useState(false);
+  const [errorDesc,setErrorDesc]= useState('');
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match");
+      setError(true);
+      return setErrorDesc("Passwords don't match!")
     }
+    // if (!validator.isEmail(emailRef.current.value)) {
+    //   console.log("in validator")
+    //   setError(true)
+    //   setErrorDesc("Invalid Email!")
+    // }
+    // if(!validator.isStrongPassword(passwordRef.current.value),
+    // {minLength: 8}){
+    //   setError(true)
+    //   setErrorDesc("Password Invalid!") 
+    // }
 
     try {
       setError(false);
@@ -56,6 +70,7 @@ const Register = () => {
   }
   function onError() {
     setError(false);
+    setErrorDesc("")
   }
   return (
     <Stack minH={"100vh"} direction={{ base: "column", md: "row" }}>
@@ -66,7 +81,7 @@ const Register = () => {
             <Alert status="error">
               <AlertIcon />
               <AlertTitle mr={2}>Failed to Sign up!</AlertTitle>
-              <AlertDescription>Check your Credentials.</AlertDescription>
+              <AlertDescription>{errorDesc}</AlertDescription>
             </Alert>
           )}
           <form onSubmit={handleSubmit}>
@@ -78,16 +93,18 @@ const Register = () => {
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <Input type="password" ref={passwordRef} onFocus={onError} />
+              
             </FormControl>
             <FormControl id="confirmpassword" isRequired>
               <FormLabel>Confirm Password</FormLabel>
               <Input type="password" ref={passwordConfirmRef} onFocus={onError} />
+              <FormHelperText>Password should be more than 8 characters long.</FormHelperText>
             </FormControl>
             <Input
-              bg={"blue.400"}
+              bg={"orange.400"}
               color={"white"}
               _hover={{
-                bg: "blue.500",
+                bg: "orange.500",
               }}
               as={Button}
               disabled={loading}

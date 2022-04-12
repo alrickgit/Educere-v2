@@ -14,7 +14,7 @@ const firebaseConfig ={
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-const storage = getStorage();
+export const storage = getStorage();
 const storageRef = ref(storage);
 export const profileIconsRef= ref(storage,"profileicons");
 

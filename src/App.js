@@ -17,12 +17,20 @@ import Course from "./Components/Course";
 import { ChakraProvider } from "@chakra-ui/react";
 import SetupProfile from "./Components/SetupProfile";
 import IsNewUser from "./Components/IsNewUser";
+import { extendTheme } from '@chakra-ui/react'
+
+const theme = extendTheme({
+  fonts: {
+    heading: 'Poppins, sans-serif',
+    body: 'Poppins, sans-serif',
+  },
+})
 // import UpdateAccount from "./Components/UpdateAccount";
 
 function App() {
   return (
     <>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <AuthProvider>
           <LocalContext>
             <ContentBox />
@@ -38,8 +46,6 @@ const ContentBox = () => {
   return (
     <main className="fixed h-screen w-screen overflow-hidden">
       <Router>
-        {/* {currentUser && <Sidebar />} */}
-        {/* {console.log(isNewUser)} */}
         <Routes>
           <Route element={<LoggedRoute currentUser={currentUser} />}>
             <Route path="/login" element={<Login />} />
@@ -48,16 +54,16 @@ const ContentBox = () => {
           </Route>
           {/* <Route path="/update-account" element={<UpdateAccount />} /> */}
           <Route element={<PrivateRoute currentUser={currentUser} />}>
-            <Route path="/courses/*" element={<Courses />} />
-            {/* <Route path="/courses/:id" element={<Course />} /> */}
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<Course />} />
             <Route path="/meeting" element={<Meeting />} />
             <Route path="/account" element={<Account />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route element={<IsNewUser isNewUser={isNewUser} />}>
+            {/* <Route element={<IsNewUser isNewUser={isNewUser} />}>
               <Route path="/setup" element={<SetupProfile />} />
-            </Route>
-            {/* <Route path="/setup" element={<SetupProfile />} /> */}
+            </Route> */}
+            <Route path="/setup" element={<SetupProfile />} />
           </Route>
         </Routes>
       </Router>

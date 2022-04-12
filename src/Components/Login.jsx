@@ -113,10 +113,10 @@ const Login = () => {
               </Stack>
               <Stack spacing={4}>
                 <Input
-                  bg={"blue.400"}
+                  bg={"orange.400"}
                   color={"white"}
                   _hover={{
-                    bg: "blue.500",
+                    bg: "orange.500",
                   }}
                   as={Button}
                   type="submit"

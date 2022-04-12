@@ -23,13 +23,13 @@ const Meeting = () => {
                 <Textarea
                   size="xs"
                   placeholder="Paste the meeting LINK here .."
-                  bgColor="gray.200"
+                  bgColor="gray.100"
                   borderRadius={10}
                 />
                 
                 <Flex>
                 <Spacer/>
-                <Button colorScheme="purple" textColor="white">
+                <Button colorScheme="orange.400" textColor="white">
                   Post
                 </Button>
                 </Flex>

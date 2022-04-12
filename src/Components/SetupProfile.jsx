@@ -158,10 +158,10 @@ const SetupProfile = () => {
             <Stack spacing={10} pt={2}>
               <Button
                 size="lg"
-                bg={"blue.400"}
+                bg={"orange.400"}
                 color={"white"}
                 _hover={{
-                  bg: "blue.500",
+                  bg: "orange.500",
                 }}
                 onClick={handleSubmit}
               >

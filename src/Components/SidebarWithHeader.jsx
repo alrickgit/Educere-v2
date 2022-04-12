@@ -35,6 +35,7 @@ import {
   EditablePreview,
   useEditableControls,
   AvatarBadge,
+  Image,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -53,12 +54,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
 import { useLocalContext } from "../contexts/LocalContext";
+import logo from "../css/logo.png";
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} maxHeight={"100%"} overflowY="auto">
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -78,9 +80,11 @@ export default function SidebarWithHeader({ children }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
+  
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
       </Box>
+      
     </Box>
   );
 }
@@ -98,9 +102,10 @@ const SidebarContent = () => {
       isOpen={isOpen}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+        {/* <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           Educere
-        </Text>
+        </Text> */}
+        <Image src={logo} />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       <Link
@@ -138,7 +143,7 @@ const NavItem = ({ icon, text }) => {
       role="group"
       cursor="pointer"
       _hover={{
-        bg: "purple.400",
+        bg: "orange.300",
         color: "white",
       }}
     >
@@ -167,7 +172,7 @@ const MobileNav = () => {
   } = useDisclosure();
   const auth = getAuth();
   const user = auth.currentUser;
-  const {uName,bio}= useLocalContext();
+  const { uName, bio,gender,org } = useLocalContext();
   const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
@@ -250,9 +255,7 @@ const MobileNav = () => {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">
-                    {uName ? uName : "User"}
-                  </Text>
+                  <Text fontSize="sm">{uName ? uName : user.displayName}</Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
                   <FiChevronDown />
@@ -306,7 +309,7 @@ const MobileNav = () => {
               <FormLabel>Name</FormLabel>
               <Editable
                 ref={nameRef}
-                defaultValue={user.displayName ? user.displayName : uName}
+                defaultValue={uName && uName}
                 isPreviewFocusable={false}
                 ml={2}
                 color="gray.600"
@@ -321,7 +324,7 @@ const MobileNav = () => {
             <FormControl mt={4}>
               <FormLabel>Biography</FormLabel>
               <Editable
-                defaultValue={bio?bio:""}
+                defaultValue={bio ? bio : ""}
                 isPreviewFocusable={false}
                 placeholder="Biography"
                 ml={2}
@@ -334,9 +337,48 @@ const MobileNav = () => {
                 </Flex>
               </Editable>
             </FormControl>
+            {/* <FormControl mt={4}>
+              <FormLabel>Gender</FormLabel>
+              <Editable
+                defaultValue={gender ? gender : ""}
+                isPreviewFocusable={false}
+                placeholder="Gender"
+                ml={2}
+                color="gray.600"
+              >
+                <Flex justifyContent="space-between">
+                  <EditablePreview />
+                  <EditableInput />
+                  <EditableControls />
+                </Flex>
+              </Editable>
+            </FormControl> */}
+            <FormControl mt={4}>
+              <FormLabel>Organization</FormLabel>
+              <Editable
+                defaultValue={org ? org : ""}
+                isPreviewFocusable={false}
+                placeholder="Organization"
+                ml={2}
+                color="gray.600"
+              >
+                <Flex justifyContent="space-between">
+                  <EditablePreview />
+                  <EditableInput />
+                  <EditableControls />
+                </Flex>
+              </Editable>
+            </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button mr={3} colorScheme="green">
+            <Button
+              mr={3}
+              bg={"orange.400"}
+              _hover={{
+                bg: "orange.500",
+              }}
+              color={'white'}
+            >
               Save
             </Button>
             <Button onClick={onProfileClose}>Cancel</Button>

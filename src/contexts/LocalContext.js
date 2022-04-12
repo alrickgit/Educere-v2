@@ -1,5 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
-import { onSnapshot, doc, getDoc,collection,query,where } from "firebase/firestore";
+import {
+  onSnapshot,
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -11,7 +18,7 @@ export const useLocalContext = () => {
 
 export const LocalContext = ({ children }) => {
   const { currentUser } = useAuth();
-  const [uName, setuName] = useState('');
+  const [uName, setuName] = useState("");
   const [org, setOrg] = useState("");
   const [bio, setBio] = useState("");
   const [gender, setgender] = useState("");
@@ -26,19 +33,19 @@ export const LocalContext = ({ children }) => {
     // setUName(UserSnap.data().userName);
     const unsubscribe = onSnapshot(UsersRef, (querySnapshot) => {
       // console.log(querySnapshot.data());
-      setuName(querySnapshot.data().userName)
-      setOrg(querySnapshot.data().org)
-      setBio(querySnapshot.data().bio)
-      setgender(querySnapshot.data().gender)
+      setuName(querySnapshot.data().userName);
+      setOrg(querySnapshot.data().org);
+      setBio(querySnapshot.data().bio);
+      setgender(querySnapshot.data().gender);
     });
     return unsubscribe;
   }
-console.log(org,bio,gender)
+  // console.log(org, bio, gender);
   useEffect(() => {
     getData();
-  }, []);
+  });
 
-  const value = { uName,org,bio,gender};
+  const value = { uName, org, bio, gender };
   return (
     <UsersContext.Provider value={value}>{children}</UsersContext.Provider>
   );

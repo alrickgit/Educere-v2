@@ -32,9 +32,13 @@ import {
   Input,
   Flex,
   Box,
-  SimpleGrid,
+  Grid,
+  GridItem,
   Heading,
   HStack,
+  Stack,
+  Text,
+  Image,
 } from "@chakra-ui/react";
 import { Link, BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -160,12 +164,21 @@ const Courses = () => {
   }, [currentUser.email]);
 
   return (
-    <div>
+    <>
       <SidebarWithHeader>
-        <Flex>
+        <Flex >
           <Box mr="8">
             <Menu>
-              <MenuButton as={IconButton} icon={<AddIcon />}></MenuButton>
+              <MenuButton
+                as={IconButton}
+                icon={<AddIcon />}
+                my={"4"}
+                bgColor={"orange.400"}
+                color={"white"}
+                _hover={{
+                  bg: "orange.500",
+                }}
+              ></MenuButton>
               <MenuList>
                 <MenuItem onClick={onCreateOpen} value="create">
                   Create Course
@@ -177,24 +190,89 @@ const Courses = () => {
             </Menu>
           </Box>
         </Flex>
-        <HStack spacing={6}>
+
+        <Grid templateColumns="repeat(3, 1fr)" overflowY="hidden" gap={6}>
           {createdCourses.map((item, index) => (
             <>
-              <Routes>
-                <Route path={`${item.id}`} element={<Course data={item} />} />
-              </Routes>
+              <GridItem
+                // maxW={"370px"}
+                w={"95%"}
+                h={"12rem"}
+                bg={"white"}
+                boxShadow={"xl"}
+                rounded={"md"}
+                overflow={"hidden"}
+                margin={"0"}
+              >
+                <Link to={`${item.id}`}>
+                  <Image
+                    h={"80px"}
+                    w={"full"}
+                    src={
+                      "https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                    }
+                    objectFit={"cover"}
+                  />
 
-              <CourseCard key={index} data={item} />
+                  <Box>
+                    <Stack spacing={0} align={"center"} my={6}>
+                      <Heading
+                        fontSize={"2xl"}
+                        fontWeight={500}
+                        fontFamily={"body"}
+                      >
+                        {item.title}
+                      </Heading>
+                      <Text color={"gray.500"}>{item.creator}</Text>
+                    </Stack>
+                  </Box>
+                </Link>
+              </GridItem>
+
+              {/* <CourseCard key={index} data={item} /> */}
             </>
           ))}
-          {/* {joinedCourses.map((item, index) => (
+          {joinedCourses.map((item, index) => (
             <>
-              <Link to={"" + index + item.id}>
-                <CourseCard key={index} data={item}></CourseCard>
-              </Link>
+              <GridItem
+                // maxW={"370px"}
+                w={"95%"}
+                h={"12rem"}
+                bg={"white"}
+                boxShadow={"xl"}
+                rounded={"md"}
+                overflow={"hidden"}
+                margin={"0"}
+              >
+                <Link to={`${item.id}`}>
+                  <Image
+                    h={"80px"}
+                    w={"full"}
+                    src={
+                      "https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                    }
+                    objectFit={"cover"}
+                  />
+
+                  <Box>
+                    <Stack spacing={0} align={"center"} my={6}>
+                      <Heading
+                        fontSize={"2xl"}
+                        fontWeight={500}
+                        fontFamily={"body"}
+                      >
+                        {item.title}
+                      </Heading>
+                      <Text color={"gray.500"}>{item.creator}</Text>
+                    </Stack>
+                  </Box>
+                </Link>
+              </GridItem>
+
+              {/* <CourseCard key={index} data={item} /> */}
             </>
-          ))} */}
-        </HStack>
+          ))}
+        </Grid>
 
         {/* Modal for Create Course */}
 
@@ -218,8 +296,9 @@ const Courses = () => {
 
               <ModalFooter>
                 <Button
-                  colorScheme="blue"
+                  bg={"orange.400"}
                   mr={3}
+                  color={"white"}
                   type="submit"
                   disabled={loading}
                 >
@@ -261,12 +340,7 @@ const Courses = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button
-                  colorScheme="blue"
-                  type="submit"
-                  mr={3}
-                  disabled={loading}
-                >
+                <Button bg={"orange.400"} type="submit" color={"white"} mr={3}>
                   Join
                 </Button>
                 <Button onClick={jClose}>Cancel</Button>
@@ -275,7 +349,7 @@ const Courses = () => {
           </ModalContent>
         </Modal>
       </SidebarWithHeader>
-    </div>
+    </>
   );
 };
 
